@@ -1,24 +1,26 @@
 package teeest;
-import lejos.robotics.SampleProvider;
-import lejos.robotics.chassis.*;
-import lejos.utility.Delay;
+
+import lejos.hardware.Button;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.LCD;
-import lejos.hardware.motor.EV3MediumRegulatedMotor;
-//import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.motor.Motor;
-import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.Port;
-//import lejos.hardware.port.Port;
 import lejos.hardware.sensor.HiTechnicIRSeekerV2;
 import lejos.hardware.sensor.SensorModes;
-public class forf {
+import lejos.robotics.SampleProvider;
+import lejos.robotics.chassis.Chassis;
+import lejos.robotics.chassis.Wheel;
+import lejos.robotics.chassis.WheeledChassis;
+import lejos.utility.Delay;
+
+public class IRSeekerTest {
 	public static void main( String [] args) {
 		int radius, wheeldia;
 		double gratio;
 		radius = 75;
 		gratio = 5/3;
 		wheeldia = 65;
+		int angle;
 		Wheel wheel1 = WheeledChassis.modelHolonomicWheel(Motor.B, wheeldia).polarPosition(30, 75).gearRatio(gratio);
 		Wheel wheel2 = WheeledChassis.modelHolonomicWheel(Motor.C, wheeldia).polarPosition(150, 75).gearRatio(gratio);
 		Wheel wheel3 = WheeledChassis.modelHolonomicWheel(Motor.A, wheeldia).polarPosition(270, 75).gearRatio(gratio);
@@ -35,15 +37,20 @@ public class forf {
 	SampleProvider iranglePro = ((HiTechnicIRSeekerV2) irSeeker).getModulatedMode();
 
 	float [] irangles = new float [iranglePro.sampleSize()];
-    	chassis.setVelocity(spd, 0, 0);
-	   Delay.msDelay(4000);
+		while (!Button.ESCAPE.isDown()) {
+	        LCD.refresh();
+	        LCD.clear();
+			iranglePro.fetchSample(irangles, 0);
+			LCD.drawInt((int) irangles [0], 2, 2);
+			if (irangles[0] >= 0)
+				chassis.setVelocity(0, 0, -irangles[0]);
+			}
 	}
 	
 	public static void displayIRangle(float [] ang) {
 		LCD.drawInt((int) ang [0], 2, 2);
+		Delay.msDelay(10);
 		LCD.clearDisplay();
 	}
 	
 }
- // get a port instance
-    
