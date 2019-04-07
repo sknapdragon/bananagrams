@@ -47,6 +47,7 @@ public class IRSeekerTest {
 			}
 	}
 	
+	
 	public static void displayIRangle(float [] ang) {
 		LCD.drawInt((int) ang [0], 2, 2);
 		Delay.msDelay(10);
