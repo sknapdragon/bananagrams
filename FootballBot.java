@@ -18,10 +18,14 @@ import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
 
 public class FootballBot {
+	private static DataExchange EXC;
+
 	public static void main(String[] args) {
+		EXC = new DataExchange();
 		int currentangle;
 		int rad = 75;
 		int wdia = 65; // in millimeters
+		float turn = 0;
 		double gratio = 1.6666;
 		RegulatedMotor ma = new EV3MediumRegulatedMotor(MotorPort.A);
 		RegulatedMotor mb = new EV3MediumRegulatedMotor(MotorPort.B);
@@ -37,33 +41,34 @@ public class FootballBot {
 		Port s3 = LocalEV3.get().getPort("S3");
 		Port s4 = LocalEV3.get().getPort("S4");
 		SensorModes irSeeker = new HiTechnicIRSeekerV2(s4);
-		SensorModes colorSensor = new EV3ColorSensor(s2);
+		// SensorModes colorSensor = new EV3ColorSensor(s1);
 		SensorModes usonicSensor = new EV3UltrasonicSensor(s3);
-		SensorModes compassSensor = new HiTechnicCompass(s1);
+		SensorModes compassSensor = new HiTechnicCompass(s2);
 		SampleProvider iranglePro = ((HiTechnicIRSeekerV2) irSeeker).getModulatedMode();
-		SampleProvider colorPro = colorSensor.getMode("RGB");
+		// SampleProvider colorPro = colorSensor.getMode("RGB");
 		SampleProvider distancePro = usonicSensor.getMode("Distance");
 		SampleProvider compdistancePro = compassSensor.getMode("Angle");
 		// the ARRAYS
 		float[] irAngles = new float[iranglePro.sampleSize()];
-		float[] colors = new float[iranglePro.sampleSize()];
-		float[] dists = new float[iranglePro.sampleSize()];
-		float[] cAngles = new float[iranglePro.sampleSize()];
+		// float[] colors = new float[colorPro.sampleSize()];
+		float[] dists = new float[distancePro.sampleSize()];
+		float[] cAngles = new float[compdistancePro.sampleSize()];
+		// activating PID thread
+		PID Porpoise = new PID(EXC, compdistancePro);
+		Porpoise.start();
 		// main program
 		while (!Button.ESCAPE.isDown()) {
+			turn = 0 + Porpoise.getCorrection();
 			iranglePro.fetchSample(irAngles, 0);
-			currentangle = (int) irAngles[0];
-			switch (currentangle) {
-			case 0:
-				moveBot(100, chassis);
-				break;
-			case 30:
-			case 330:
-				moveBot(100, currentangle, 0, chassis);
-				break;
-			}
-
+			/*
+			 * currentangle = (int) irAngles[0]; switch (currentangle) { case 0:
+			 * moveBot(100, chassis); break; case 30: case 330: moveBot(100, currentangle,
+			 * (int)turn, chassis); break;
+			 */
+			chassis.setVelocity(0, 0, turn);
 		}
+
+		Porpoise.stopPID();
 	}
 
 	public static Wheel createWheel(RegulatedMotor m, int wheeldia, int pos, int radi, double gratio) {
@@ -78,27 +83,4 @@ public class FootballBot {
 		chassis.setVelocity(spd, direction, angvel);
 	}
 
-	protected static float angleCorrect(SampleProvider compdistancePro, float[] compassangles, float start,
-			float previouscorrection) {
-
-		float kp, ki, kd;
-		float errorsum = 0;
-		float slope;
-		float error = 0;
-		float lasterror;
-		while (true) {
-			compdistancePro.fetchSample(compassangles, 0);
-			kp = 10;
-			// remember why writing this as a method doesn't 'work' rn
-			ki = 10;
-			kp = 10;
-
-			lasterror = error;
-			error = start - compassangles[0];
-			errorsum += error;
-			slope = error - lasterror;
-			float correction = kp * error + ki * errorsum + kp * slope;
-			return correction;
-		}
-	}
 }

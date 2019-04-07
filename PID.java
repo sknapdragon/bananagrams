@@ -1,33 +1,55 @@
 package teeest;
 
+import lejos.hardware.lcd.LCD;
+import lejos.hardware.sensor.HiTechnicCompass;
+import lejos.robotics.SampleProvider;
 
-public class PID{
+public class PID extends Thread{
 	private float target = 0, current, start = 0;
-	private float kp = 1, ki=1, kd=1;
-	private float error, lasterror, errorsum, slope;
+	private float kp = 5, ki=0, kd=0;
+	private float error, lasterror, errorsum, slope, correction;
 	private boolean on = true;
-	
-	public PID(float st, float cr) {
-		start = st;
+	private DataExchange DE;
+	private SampleProvider compasspr;
+	PID(DataExchange exc, SampleProvider cppr) {
+		DE = exc;
 		target = start;
-		current = cr;
 		lasterror = 0;
 		errorsum = 0;
 		error = 0;
+		compasspr = cppr;
 	}
 
-	public float runPID() {
-		
+	public void run() {
+		float[] cur = new float[10];
+		compasspr.fetchSample(cur, 1);
+		start = cur [1];
+		while (on == true) {
+		compasspr.fetchSample(cur, 1);
+
+		runPID(cur[1]);
+	}
+	}
+	
+	public void stopPID(){
+		on = false;
+	}
+	public float runPID(float cur) {
+	current = cur;
 	lasterror = error;
 	error = target - current;
 	errorsum += error;
 	slope = error - lasterror;
-	float correction = kp*error + ki * errorsum + kd*slope;
+	correction = kp*error + ki * errorsum + kd*slope;
 	return correction;
 	
 
 	}
 	
+
+	public float getCorrection() {
+		return correction;
+	}
 
 	public boolean isOn() {
 		return on;
