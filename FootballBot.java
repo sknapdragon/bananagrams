@@ -2,6 +2,7 @@ package teeest;
 
 import lejos.hardware.Button;
 import lejos.hardware.ev3.LocalEV3;
+import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.motor.Motor;
 import lejos.hardware.port.MotorPort;
@@ -42,30 +43,31 @@ public class FootballBot {
 		Port s4 = LocalEV3.get().getPort("S4");
 		SensorModes irSeeker = new HiTechnicIRSeekerV2(s4);
 		// SensorModes colorSensor = new EV3ColorSensor(s1);
-		SensorModes usonicSensor = new EV3UltrasonicSensor(s3);
 		SensorModes compassSensor = new HiTechnicCompass(s2);
-		SampleProvider iranglePro = ((HiTechnicIRSeekerV2) irSeeker).getModulatedMode();
+		SampleProvider iranglePro = irSeeker.getMode("Modulated");
 		// SampleProvider colorPro = colorSensor.getMode("RGB");
-		SampleProvider distancePro = usonicSensor.getMode("Distance");
+	//	SampleProvider distancePro = usonicSensor.getMode("Distance");
 		SampleProvider compdistancePro = compassSensor.getMode("Angle");
 		// the ARRAYS
 		float[] irAngles = new float[iranglePro.sampleSize()];
 		// float[] colors = new float[colorPro.sampleSize()];
-		float[] dists = new float[distancePro.sampleSize()];
+	//	float[] dists = new float[distancePro.sampleSize()];
 		float[] cAngles = new float[compdistancePro.sampleSize()];
 		// activating PID thread
 		PID Porpoise = new PID(EXC, compdistancePro);
 		Porpoise.start();
 		// main program
+		float lDir = 0, lSpd = 70;
 		while (!Button.ESCAPE.isDown()) {
 			turn = 0 + Porpoise.getCorrection();
 			iranglePro.fetchSample(irAngles, 0);
-			/*
-			 * currentangle = (int) irAngles[0]; switch (currentangle) { case 0:
-			 * moveBot(100, chassis); break; case 30: case 330: moveBot(100, currentangle,
-			 * (int)turn, chassis); break;
-			 */
-			chassis.setVelocity(0, 0, turn);
+			setDirection(irAngles[0]);
+	        LCD.refresh();
+	        LCD.clear();
+			LCD.drawInt((int) irAngles [0], 2, 2);
+
+
+			chassis.setVelocity(lDir, lSpd, turn);
 		}
 
 		Porpoise.stopPID();
@@ -81,6 +83,46 @@ public class FootballBot {
 
 	public static void moveBot(int spd, int direction, int angvel, Chassis chassis) {
 		chassis.setVelocity(spd, direction, angvel);
+	}
+
+	public static float setDirection(float irAng) {
+		int dir = 0;
+		
+		switch ((int)irAng) {
+		case 0:
+			dir = -15;
+			break;
+		case 1:
+			dir = -15;
+			break;
+		case 4124:
+			dir = -15;
+			break;
+		case 2:
+			dir = -15;
+			break;
+		case 3:
+			dir = -15;
+			break;
+		case 4:
+			dir = -15;
+			break;
+		case 5:
+			dir = -15;
+			break;
+		case 8:
+			dir = -15;
+			break;
+		case 180:
+			dir = -15;
+			break;
+		case 1230:
+			dir = -15;
+			break;
+
+		}
+		return dir;
+
 	}
 
 }
