@@ -1,5 +1,6 @@
 package teeest;
 
+import CustomSensor.HiTechnicIRSeekerV2CustomStr;
 import lejos.hardware.Button;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.LCD;
@@ -34,6 +35,7 @@ public class FootballBot {
 		RegulatedMotor md = new EV3MediumRegulatedMotor(MotorPort.D);
 		Wheel wheela = createWheel(mb, wdia, 30, rad, gratio);
 		Wheel wheelc = createWheel(mc, wdia, 150, rad, gratio);
+		//back wheel
 		Wheel wheelb = createWheel(ma, wdia, 270, rad, gratio);
 		Chassis chassis = new WheeledChassis(new Wheel[] { wheela, wheelb, wheelc }, WheeledChassis.TYPE_HOLONOMIC);
 		// setting up sensors
@@ -41,33 +43,39 @@ public class FootballBot {
 		Port s2 = LocalEV3.get().getPort("S2");
 		Port s3 = LocalEV3.get().getPort("S3");
 		Port s4 = LocalEV3.get().getPort("S4");
-		SensorModes irSeeker = new HiTechnicIRSeekerV2(s4);
+		SensorModes irSeeker = new HiTechnicIRSeekerV2CustomStr(s4);
 		// SensorModes colorSensor = new EV3ColorSensor(s1);
 		SensorModes compassSensor = new HiTechnicCompass(s2);
 		SampleProvider iranglePro = irSeeker.getMode("Modulated");
 		// SampleProvider colorPro = colorSensor.getMode("RGB");
 	//	SampleProvider distancePro = usonicSensor.getMode("Distance");
 		SampleProvider compdistancePro = compassSensor.getMode("Angle");
+		SampleProvider irStrPro = irSeeker.getMode("ModulatedMiddleStrength");
 		// the ARRAYS
 		float[] irAngles = new float[iranglePro.sampleSize()];
 		// float[] colors = new float[colorPro.sampleSize()];
 	//	float[] dists = new float[distancePro.sampleSize()];
 		float[] cAngles = new float[compdistancePro.sampleSize()];
+		float[] irStr = new float[irStrPro.sampleSize()];
 		// activating PID thread
 		PID Porpoise = new PID(EXC, compdistancePro);
 		Porpoise.start();
 		// main program
-		float lDir = 0, lSpd = 70;
+		float lDir = 0, lSpd = 1500;
 		while (!Button.ESCAPE.isDown()) {
 			turn = 0 + Porpoise.getCorrection();
 			iranglePro.fetchSample(irAngles, 0);
-			setDirection(irAngles[0]);
+			irStrPro.fetchSample(irStr, 0);
+			//setDirection(irAngles[0]);
 	        LCD.refresh();
 	        LCD.clear();
 			LCD.drawInt((int) irAngles [0], 2, 2);
+			LCD.drawInt((int) irStr [0], 2, 4);
 
 
-			chassis.setVelocity(lDir, lSpd, turn);
+		//	lDir = setDirection((int)irAngles[0], (int)irStr[0]);
+			//put turn there
+			chassis.setVelocity(lSpd, lDir, 0);
 		}
 
 		Porpoise.stopPID();
@@ -85,40 +93,41 @@ public class FootballBot {
 		chassis.setVelocity(spd, direction, angvel);
 	}
 
-	public static float setDirection(float irAng) {
-		int dir = 0;
+	public static float setDirection(float irAng, int irStr) {
+		int dir = 90;
 		
-		switch ((int)irAng) {
+		switch (-(int)irAng) {
 		case 0:
-			dir = -15;
+			if (irStr <30)
+				dir -= 180;
+			else
+			dir +=0;
 			break;
-		case 1:
-			dir = -15;
+		case 30:
+			dir += 40;
 			break;
-		case 4124:
-			dir = -15;
+		case 60:
+			dir += 75;
 			break;
-		case 2:
-			dir = -15;
+		case 90:
+			dir += 110;
 			break;
-		case 3:
-			dir = -15;
+		case 120:
+			dir +=135;
 			break;
-		case 4:
-			dir = -15;
+		case -30:
+			dir += 45;
 			break;
-		case 5:
-			dir = -15;
+		case -60:
+			dir += -75;
 			break;
-		case 8:
-			dir = -15;
+		case -90:
+			dir += -110;
 			break;
-		case 180:
-			dir = -15;
+		case -120:
+			dir += -135;
 			break;
-		case 1230:
-			dir = -15;
-			break;
+
 
 		}
 		return dir;
