@@ -17,13 +17,16 @@ import lejos.robotics.chassis.WheeledChassis;
 import lejos.utility.Delay;
 
 public class SecondRobot {
+	private static DataExchange EXC;
+
 	static RegulatedMotor ma = new EV3MediumRegulatedMotor(MotorPort.A);
 	static RegulatedMotor mb = new EV3LargeRegulatedMotor(MotorPort.B);
 	static RegulatedMotor mc = new EV3LargeRegulatedMotor(MotorPort.C);
 	static RegulatedMotor md = new EV3MediumRegulatedMotor(MotorPort.D);
-	
+
 	static Wheel wheela = WheeledChassis.modelHolonomicWheel(mc, 61).polarPosition(30, 70).gearRatio(1);
-	static Wheel wheelb = WheeledChassis.modelHolonomicWheel(mb, 61).polarPosition(150, 70).gearRatio(-1); //reversed wheel b
+	static Wheel wheelb = WheeledChassis.modelHolonomicWheel(mb, 61).polarPosition(150, 70).gearRatio(-1); // reversed
+																											// wheel b
 	static Wheel wheelc = WheeledChassis.modelHolonomicWheel(ma, 61).polarPosition(270, 70).gearRatio(1);
 	static Chassis chassis = new WheeledChassis(new Wheel[] { wheela, wheelb, wheelc }, WheeledChassis.TYPE_HOLONOMIC);
 	static Port s1 = LocalEV3.get().getPort("S1");
@@ -42,6 +45,8 @@ public class SecondRobot {
 		Delay.msDelay(3000);
 		chassis.setVelocity(0, 0, 0);
 		Button.waitForAnyPress();
+		/// PID Porpoise = new PID(EXC, compdistancePro);
+		/// Porpoise.start();
 
 		operation(irAngles, iranglePro, chassis);
 
@@ -64,7 +69,6 @@ public class SecondRobot {
 		int state = 0;
 		while (true) {
 			iap.fetchSample(irp, 0);
-			angle = (int) irp[0];
 			switch (state) {
 			// This switch takes in ir vales and does stuff with them.
 			case 0:
@@ -100,7 +104,10 @@ public class SecondRobot {
 				default:
 					c.setVelocity(0, 0, 0);
 				}
+
 				state = 0;
+			case 1:
+
 			}
 		}
 
