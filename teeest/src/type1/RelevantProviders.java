@@ -40,19 +40,19 @@ public class RelevantProviders {
 	SampleProvider colorPro = colorSensor.getMode("RGB");
 	SampleProvider irStrPro = irSeeker.getMode("ModulatedMiddleStrength");
 	SampleProvider irAnglePro = irSeeker.getMode("Modulated");
-//	SampleProvider distancePro = UltraSensor.getMode("Distance");
+	SampleProvider distancePro = ((EV3UltrasonicSensor) UltraSensor).getDistanceMode();
 
 	// the ARRAYS
 	float[] irAngles = new float[irAnglePro.sampleSize()];
 	float[] colorReadings = new float[colorPro.sampleSize()];
-//	float[] distances = new float[distancePro.sampleSize()];
+	float[] distances = new float[distancePro.sampleSize()];
 	float[] cAngles = new float[CmAngleProvider.sampleSize()];
 	float[] irStr = new float[irStrPro.sampleSize()];
 	
 	public void updateAllProviders() {
 		irAnglePro.fetchSample(irAngles, 0);
 		colorPro.fetchSample(colorReadings, 0);
-//		distancePro.fetchSample(distances, 0);
+		distancePro.fetchSample(distances, 0);
 		CmAngleProvider.fetchSample(cAngles, 0);
 		irStrPro.fetchSample(irStr, 0);
 	}
