@@ -72,10 +72,12 @@ public class RS extends Thread {
 			break;
 			case "HasTheBall":
 					Sound.buzz();
-					Motor.D.forward();
+					prov.md.forward();
+					c.setVelocity(400, 90, correction);
+
 				//experiment with remote
 				if (blue < 25) {
-					Motor.D.stop();
+					prov.md.flt();
 					state = "Neutral";
 				}
 				
