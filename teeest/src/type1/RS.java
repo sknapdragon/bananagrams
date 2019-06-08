@@ -71,7 +71,7 @@ public class RS extends Thread {
 
 			break;
 			case "HasTheBall":
-					Sound.buzz();
+					Sound.twoBeeps();
 					prov.md.forward();
 					c.setVelocity(400, 90, correction);
 
