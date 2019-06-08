@@ -30,7 +30,8 @@ public class ForwardMain {
 
 		// PID test used in day 1	prov.chassis.setVelocity(0, 0, Porpoise.getCorrection());
 			LCD.drawInt((int) prov.irAngles [0], 2, 0);
-			LCD.drawInt((int) prov.irStr [0], 2, 1);
+			LCD.drawInt((int) prov.irStr [2], 2, 1);
+			LCD.drawInt(prov.avgStr(), 6, 1);
 			LCD.drawInt((int) (255*prov.colorReadings[2]), 2, 2);
 			LCD.drawInt((int) prov.chassis.getMaxLinearSpeed(), 2, 3);
 			LCD.drawInt((int) Porpoise.getCorrection(), 2, 4);
@@ -39,8 +40,8 @@ public class ForwardMain {
 	        LCD.refresh();
 		}
 		Porpoise.stopPID();
-		RunTheBot.stopOP();
 		UPSENS.stopOP();
+		RunTheBot.stopOP();
 		
 	}
 

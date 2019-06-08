@@ -23,7 +23,6 @@ public class RS extends Thread {
 		String state = "Neutral";
 
 
-
 		while (on){
 			int blue = (int)(255* prov.colorReadings[2]);
 		float correction = PID.getCorrection();
@@ -31,16 +30,20 @@ public class RS extends Thread {
 		switch (state) {
 		// This switch takes in IR values and does stuff with them.
 		case "Neutral":
-			LCD.drawInt(angle, 1, 1);
+
 			switch (angle) {
 			case 0:
+				//directly in front
+				if (prov.irStr[2]<20) // fine tune the threshhold
+					c.setVelocity(500, 270, correction); //if signal not strong enough, go backwards
+				else
 				c.setVelocity(400, 90, correction);
 				break;
 			case -60:
 				c.setVelocity(400, 0, correction);
 				break;
-			case -30:
-				c.setVelocity(200, 30, correction);
+			case -30: // to the "right"
+				c.setVelocity(300, 30, correction);
 				break;
 			case -90:
 				c.setVelocity(500, -30, correction);
@@ -48,7 +51,7 @@ public class RS extends Thread {
 			case -120:
 				c.setVelocity(500, -90, correction);
 				break;
-			case 120:
+			case 120: 
 				c.setVelocity(500, -90, correction);
 				break;
 			case 90:
@@ -57,7 +60,7 @@ public class RS extends Thread {
 			case 60:
 				c.setVelocity(500, 180, correction);
 				break;
-			case 30:
+			case 30: // to the "left"
 				c.setVelocity(500, 150, correction);
 				break;
 			default:
@@ -72,11 +75,11 @@ public class RS extends Thread {
 			break;
 			case "HasTheBall":
 					Sound.twoBeeps();
-					prov.md.forward();
+					prov.md.rotate(60);
 					c.setVelocity(400, 90, correction);
 
-				//experiment with remote
-				if (blue < 25) {
+				//experiment with remote here later
+				if (blue < 25) { 
 					prov.md.flt();
 					state = "Neutral";
 				}

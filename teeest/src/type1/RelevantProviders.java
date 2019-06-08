@@ -38,27 +38,46 @@ public class RelevantProviders {
 
 	SampleProvider CmAngleProvider = compassSensor.getMode("Angle");
 	SampleProvider colorPro = colorSensor.getMode("RGB");
-	SampleProvider irStrPro = irSeeker.getMode("ModulatedMiddleStrength");
+	SampleProvider irStr1Pro = irSeeker.getMode("M1S");
+	SampleProvider irStr2Pro = irSeeker.getMode("M2S");
+	SampleProvider irStr3Pro = irSeeker.getMode("ModulatedMiddleStrength");
+	SampleProvider irStr4Pro = irSeeker.getMode("M4S");
+	SampleProvider irStr5Pro = irSeeker.getMode("M5S");
 	SampleProvider irAnglePro = irSeeker.getMode("Modulated");
-	SampleProvider distancePro = ((EV3UltrasonicSensor) UltraSensor).getDistanceMode();
+	SampleProvider distancePro = UltraSensor.getMode("Distance");
 
 	// the ARRAYS
 	float[] irAngles = new float[irAnglePro.sampleSize()];
 	float[] colorReadings = new float[colorPro.sampleSize()];
 	float[] distances = new float[distancePro.sampleSize()];
 	float[] cAngles = new float[CmAngleProvider.sampleSize()];
-	float[] irStr = new float[irStrPro.sampleSize()];
+	float[] irStr = new float[5];
 	
+	public int avgStr() {
+		int aStr = 0;
+		for( float e: irStr)
+			aStr += e;
+		aStr/=5;
+		return aStr;
+	}
+
+
 	public void updateAllProviders() {
 		irAnglePro.fetchSample(irAngles, 0);
 		colorPro.fetchSample(colorReadings, 0);
 		distancePro.fetchSample(distances, 0);
 		CmAngleProvider.fetchSample(cAngles, 0);
-		irStrPro.fetchSample(irStr, 0);
+		irStr1Pro.fetchSample(irStr, 0);
+		irStr2Pro.fetchSample(irStr, 1);
+		irStr3Pro.fetchSample(irStr, 2);
+		irStr4Pro.fetchSample(irStr, 3);
+		irStr5Pro.fetchSample(irStr, 4);
+
+		
 	}
 	public void updateIRProviders() {
 		irAnglePro.fetchSample(irAngles, 0);
-		irStrPro.fetchSample(irStr, 0);
+		irStr1Pro.fetchSample(irStr, 0);
 	}
 
 }
