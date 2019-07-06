@@ -73,14 +73,24 @@ public class RS extends Thread {
 
 
 			break;
+			
+			
 			case "HasTheBall":
 					Sound.twoBeeps();
-					prov.md.rotate(60);
+					prov.md.forward();
+					
+					if(prov.distances[0] > .8)
+						PID.setRelativeTarget(-30);
+					if (prov.distances[0]< .4)
+						PID.setRelativeTarget(30);
+					while(blue > 25) {
 					c.setVelocity(400, 90, correction);
+					blue = (int)(255* prov.colorReadings[2]);
+					}
 
 				//experiment with remote here later
 				if (blue < 25) { 
-					prov.md.flt();
+					//prov.md.flt();
 					state = "Neutral";
 				}
 				

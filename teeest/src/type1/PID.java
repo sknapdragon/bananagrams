@@ -72,6 +72,13 @@ public class PID extends Thread{
 		target = tgt;
 	}
 	
+	public void setRelativeTarget(float tgt) {
+		target = start + tgt;
+	}
+	
+	public void restartTarget() {
+		target = start;
+	}
+	}
 
 
-}
