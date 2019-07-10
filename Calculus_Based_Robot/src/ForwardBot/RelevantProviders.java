@@ -1,4 +1,4 @@
-package type1;
+package ForwardBot;
 
 import CustomSensor.HiTechnicIRSeekerV2CustomStr;
 import lejos.hardware.ev3.LocalEV3;
@@ -16,7 +16,8 @@ import lejos.robotics.chassis.Chassis;
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
 
-public class RelevantProviders {
+public class RelevantProviders extends Thread{
+	boolean on = true;
 	RegulatedMotor ma = new EV3MediumRegulatedMotor(MotorPort.A);
 	RegulatedMotor mb = new EV3LargeRegulatedMotor(MotorPort.B);
 	RegulatedMotor mc = new EV3LargeRegulatedMotor(MotorPort.C);
@@ -62,7 +63,17 @@ public class RelevantProviders {
 	}
 
 
-	public void updateAllProviders() {
+	public void run() {
+		// TODO Auto-generated method stub
+		while(on)
+		updateAllProviders();
+	}
+	public void stopOP() {
+		on = false;
+		
+	}
+	public void updateAllProviders() // Sketchy
+	{
 		irAnglePro.fetchSample(irAngles, 0);
 		colorPro.fetchSample(colorReadings, 0);
 		distancePro.fetchSample(distances, 0);

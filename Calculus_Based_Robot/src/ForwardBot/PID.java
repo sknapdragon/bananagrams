@@ -1,4 +1,4 @@
-package teeest;
+package ForwardBot;
 
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.sensor.HiTechnicCompass;

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="BluetoothTest/src"/>
+	<classpathentry kind="src" path="teeest/src"/>
+	<classpathentry kind="lib" path="BluetoothTest/BlueCommsTest.jar"/>
+	<classpathentry kind="lib" path="BluetoothTest/dataSend.jar"/>
+	<classpathentry kind="lib" path="BluetoothTest/ForwardDataTest.jar"/>
+	<classpathentry kind="lib" path="BluetoothTest/WifiServer.jar"/>
+	<classpathentry kind="lib" path="teeest/FootballBot.jar"/>
+	<classpathentry kind="lib" path="teeest/forf.jar"/>
+	<classpathentry kind="lib" path="teeest/ForwardMain.jar"/>
+	<classpathentry kind="lib" path="teeest/IRSeekerTest.jar"/>
+	<classpathentry kind="lib" path="teeest/motortest.jar"/>
+	<classpathentry kind="lib" path="teeest/ProofOfConcept.jar"/>
+	<classpathentry kind="lib" path="teeest/SecondRobot.jar"/>
+	<classpathentry kind="lib" path="teeest/testclass.jar"/>
+	<classpathentry kind="output" path="BluetoothTest/bin"/>
+</classpath>
