@@ -1,33 +1,30 @@
 package ForwardBot;
-
-import lejos.hardware.lcd.LCD;
-import lejos.hardware.sensor.HiTechnicCompass;
 import lejos.robotics.SampleProvider;
 
 public class PID extends Thread{
-	private float target = 0, current, start = 0;
-	private float kp = 5, ki=0, kd=0;
+	double target = 0;
+	private float current, start = 0;
+	private float kp = (float) 1, ki=(float)0.010, kd=1;
 	private float error, lasterror, errorsum, slope, correction;
 	private boolean on = true;
 	private DataExchange DE;
-	private SampleProvider compasspr;
-	PID(DataExchange exc, SampleProvider cppr) {
+	private float[] compassAngles;
+	PID(DataExchange exc, float[] ca) {
 		DE = exc;
 		target = start;
 		lasterror = 0;
 		errorsum = 0;
 		error = 0;
-		compasspr = cppr;
+		compassAngles = ca;
 	}
 
 	public void run() {
-		float[] cur = new float[10];
-		compasspr.fetchSample(cur, 1);
-		start = cur [1];
-		while (on == true) {
-		compasspr.fetchSample(cur, 1);
+		start = compassAngles[0];
+		target = start;
+		while (on) {
+		
 
-		runPID(cur[1]);
+		runPID(compassAngles[0]);
 	}
 	}
 	
@@ -37,7 +34,7 @@ public class PID extends Thread{
 	public float runPID(float cur) {
 	current = cur;
 	lasterror = error;
-	error = target - current;
+	error = (float) (target - current);
 	errorsum += error;
 	slope = error - lasterror;
 	correction = kp*error + ki * errorsum + kd*slope;
@@ -75,5 +72,12 @@ public class PID extends Thread{
 		target = tgt;
 	}
 	
-}
+	public void setRelativeTarget(double tgtAngle) {
+		target = start + tgtAngle;
+	}
+	
+	public void restartTarget() {
+		target = start;
+	}
+	}
 

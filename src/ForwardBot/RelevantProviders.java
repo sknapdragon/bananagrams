@@ -15,8 +15,10 @@ import lejos.robotics.SampleProvider;
 import lejos.robotics.chassis.Chassis;
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
+import lejos.robotics.filter.MaximumFilter;
+import lejos.robotics.filter.MeanFilter;
 
-public class RelevantProviders extends Thread{
+public class RelevantProviders{
 	boolean on = true;
 	RegulatedMotor ma = new EV3MediumRegulatedMotor(MotorPort.A);
 	RegulatedMotor mb = new EV3LargeRegulatedMotor(MotorPort.B);
@@ -46,13 +48,14 @@ public class RelevantProviders extends Thread{
 	SampleProvider irStr5Pro = irSeeker.getMode("M5S");
 	SampleProvider irAnglePro = irSeeker.getMode("Modulated");
 	SampleProvider distancePro = UltraSensor.getMode("Distance");
-
+	SampleProvider maxDist = new MaximumFilter(distancePro, 5);
 	// the ARRAYS
 	float[] irAngles = new float[irAnglePro.sampleSize()];
 	float[] colorReadings = new float[colorPro.sampleSize()];
 	float[] distances = new float[distancePro.sampleSize()];
 	float[] cAngles = new float[CmAngleProvider.sampleSize()];
 	float[] irStr = new float[5];
+	float[] maxdistances = new float[maxDist.sampleSize()];
 	
 	public int avgStr() {
 		int aStr = 0;
@@ -62,7 +65,7 @@ public class RelevantProviders extends Thread{
 		return aStr;
 	}
 
-
+	/*
 	public void run() {
 		// TODO Auto-generated method stub
 		while(on)
@@ -72,6 +75,7 @@ public class RelevantProviders extends Thread{
 		on = false;
 		
 	}
+	*/
 	public void updateAllProviders() // Sketchy
 	{
 		irAnglePro.fetchSample(irAngles, 0);
@@ -90,5 +94,23 @@ public class RelevantProviders extends Thread{
 		irAnglePro.fetchSample(irAngles, 0);
 		irStr1Pro.fetchSample(irStr, 0);
 	}
+	public void updateIrAng() {
+		irAnglePro.fetchSample(irAngles, 0);
+	}
+	public void updateIrStr() {
+		irStr1Pro.fetchSample(irStr, 0);
+		irStr2Pro.fetchSample(irStr, 1);
+		irStr3Pro.fetchSample(irStr, 2);
+		irStr4Pro.fetchSample(irStr, 3);
+		irStr5Pro.fetchSample(irStr, 4);
+	}
+	public void updateDistance() {
+		maxDist.fetchSample(maxdistances, 0);
+		distancePro.fetchSample(distances, 0);
+	}
+	public void updateColor() {
+		colorPro.fetchSample(colorReadings, 0);
+	}
+
 
 }
