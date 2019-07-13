@@ -1,4 +1,4 @@
-package CustomSensor;
+package tempProject;
 
 import lejos.hardware.port.I2CPort;
 import lejos.hardware.port.Port;

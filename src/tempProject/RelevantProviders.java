@@ -1,6 +1,4 @@
-package ForwardBot;
-
-import CustomSensor.HiTechnicIRSeekerV2CustomStr;
+package tempProject;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
@@ -16,7 +14,6 @@ import lejos.robotics.chassis.Chassis;
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
 import lejos.robotics.filter.MaximumFilter;
-import lejos.robotics.filter.MeanFilter;
 
 public class RelevantProviders{
 	boolean on = true;
@@ -37,7 +34,7 @@ public class RelevantProviders{
 	SensorModes compassSensor = new HiTechnicCompass(s1);
 	SensorModes colorSensor = new HiTechnicColorSensor(s2);
 	SensorModes irSeeker = new HiTechnicIRSeekerV2CustomStr(s3);
-	SensorModes UltraSensor = new EV3UltrasonicSensor(s4);
+	EV3UltrasonicSensor UltraSensor = new EV3UltrasonicSensor(s4);
 
 	SampleProvider CmAngleProvider = compassSensor.getMode("Angle");
 	SampleProvider colorPro = colorSensor.getMode("RGB");
@@ -47,7 +44,7 @@ public class RelevantProviders{
 	SampleProvider irStr4Pro = irSeeker.getMode("M4S");
 	SampleProvider irStr5Pro = irSeeker.getMode("M5S");
 	SampleProvider irAnglePro = irSeeker.getMode("Modulated");
-	SampleProvider distancePro = UltraSensor.getMode("Distance");
+	SampleProvider distancePro = UltraSensor.getDistanceMode();
 	SampleProvider maxDist = new MaximumFilter(distancePro, 5);
 	// the ARRAYS
 	float[] irAngles = new float[irAnglePro.sampleSize()];
@@ -96,6 +93,9 @@ public class RelevantProviders{
 	}
 	public void updateIrAng() {
 		irAnglePro.fetchSample(irAngles, 0);
+	}
+	public void updateCompass() {
+		CmAngleProvider.fetchSample(cAngles, 0);
 	}
 	public void updateIrStr() {
 		irStr1Pro.fetchSample(irStr, 0);

@@ -1,4 +1,6 @@
-package ForwardBot;
+package tempProject;
+
+import lejos.hardware.Sound;
 
 public class FSM extends Thread {
 	public enum ForwardState {
@@ -21,9 +23,10 @@ public class FSM extends Thread {
 		this.pid = pid;
 	}
 
-	void Run() {
+	public void run() {
 
 		while (on) {
+			Sound.beep();
 			switch (_state) {
 			case Initiazlize:
 				InitMe();
@@ -54,6 +57,7 @@ public class FSM extends Thread {
 
 	private void InitMe() {
 		System.out.println("Initmefunc");
+		_state = ForwardState.DriveBound;
 	}
 
 	private void Driving() {
@@ -64,7 +68,7 @@ public class FSM extends Thread {
 		int bAng = 0; // This angle starts at the regular Cartesian 0 degrees
 		int baseSpeed = 400;
 
-		while (_state == ForwardState.DriveBound) {
+		while (_state == ForwardState.DriveBound && on) {
 			prov.updateIrAng();
 			switch (fromFronttoCaresianAngleSystem((int) prov.cAngles[0]) % 360) {
 			case 210: // to the right

@@ -1,10 +1,10 @@
-package ForwardBot;
+package tempProject;
 
 import java.util.ArrayList;
 
-import ForwardBot.BallData.CartCoords;
-import ForwardBot.BallData.CartVelocity;
-import ForwardBot.BallData.PolarCoords;
+import lejos.hardware.Sound;
+import tempProject.BallData.CartCoords;
+import tempProject.BallData.PolarCoords;
 
 public class CalcCal extends Thread {
 	ArrayList<BallData.CartCoords> lastXVals = new ArrayList<BallData.CartCoords>();
@@ -46,8 +46,8 @@ public class CalcCal extends Thread {
 	
 
 	public double estSpeed() {
-		int x1 = lastXVals.get(lastXVals.size()).ballX;
-		int y1 = lastXVals.get(lastXVals.size()).ballY;
+		int x1 = lastXVals.get(lastXVals.size()-1).ballX;
+		int y1 = lastXVals.get(lastXVals.size()-1).ballY;
 		int x2 = lastXVals.get(0).ballX;
 		int y2 = lastXVals.get(0).ballY;
 		int size = lastXVals.size();
@@ -55,23 +55,23 @@ public class CalcCal extends Thread {
 		return distance/size;
 	}
 	public int estDirection() {
-		int x1 = lastXVals.get(lastXVals.size()).ballX;
-		int y1 = lastXVals.get(lastXVals.size()).ballY;
+		int x1 = lastXVals.get(lastXVals.size()-1).ballX;
+		int y1 = lastXVals.get(lastXVals.size()-1).ballY;
 		int x2 = lastXVals.get(0).ballX;
 		int y2 = lastXVals.get(0).ballY;
 		return (int) (180.000/Math.PI * Math.atan2(y2-y1,x2-x1)); //Arctangent of displacement calculates an angle
 	}
 	public double estSpeedInstantously() {
-		int x1 = lastXVals.get(lastXVals.size()).ballX;
-		int y1 = lastXVals.get(lastXVals.size()).ballY;
+		int x1 = lastXVals.get(lastXVals.size()-1).ballX;
+		int y1 = lastXVals.get(lastXVals.size()-1).ballY;
 		int x2 = lastXVals.get(0).ballX;
 		int y2 = lastXVals.get(0).ballY;
 		int size = lastXVals.size();
-		return (y2-y1/x2-x1);
+		return ((y2-y1)/(x2-x1));
 	}
 	public int estDirectionInstantously() {
-		int x1 = lastXVals.get(lastXVals.size()).ballX;
-		int y1 = lastXVals.get(lastXVals.size()).ballY;
+		int x1 = lastXVals.get(lastXVals.size()-1).ballX;
+		int y1 = lastXVals.get(lastXVals.size()-1).ballY;
 		int x2 = lastXVals.get(0).ballX;
 		int y2 = lastXVals.get(0).ballY;
 		return (int) (180.000/Math.PI * Math.atan2(y2-y1,x2-x1)); //Arctangent of displacement calculates an angle
